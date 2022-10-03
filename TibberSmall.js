@@ -10,9 +10,9 @@
 // Find your token by logging in with your Tibber account here:
 // https://developer.tibber.com/settings/accesstoken
 // NOTE! Your token is private, don't share it with anyone!
-const TIBBERTOKEN = "476c477d8a039529478ebd690d35ddd80e3308ffc49b59c65b142321aee963a4";
+const TIBBERTOKEN = args.widgetParameter  || "YOUR_TOKEN"
 
-// In most cases, the HOME_NR should be 0, but if you have several subscriptions (house + cabin eg) 
+// In most cases, the HOME_NR should be 0, but if you have several subscriptions (house + cabin eg)
 // then you may need to change it to 1 (or 2).
 // Try 0 first and if there is an error message, try with 1 (and then 2).
 const HOME_NR = 0;
@@ -140,7 +140,7 @@ async function createWidget() {
   if (priceOre > avgPrice)
     price.textColor = new Color(TEXTCOLOR_HIGH)
 
-  const priceTxt = stackV.addText("øre/kWh");
+  const priceTxt = stackV.addText("öre/kWh");
   priceTxt.centerAlignText();
   priceTxt.font = Font.lightSystemFont(10);
   priceTxt.textColor = new Color(TEXTCOLOR);
@@ -169,7 +169,7 @@ async function createWidget() {
   usage2.font = Font.lightSystemFont(14);
   usage2.textColor = new Color(TEXTCOLOR);
 
-  let usageTxt = stackH.addText("Hittil i dag");
+  let usageTxt = stackH.addText("Idag");
   usageTxt.rightAlignText();
   usageTxt.font = Font.lightSystemFont(10);
   usageTxt.textColor = new Color(TEXTCOLOR);
@@ -186,7 +186,7 @@ async function createWidget() {
   let min = d.getMinutes();
   if (min < 10) min = "0" + min;
 
-  let time = lw.addText("Oppdatert: " + hour + ":" + min);
+  let time = lw.addText("Uppdaterat: " + hour + ":" + min);
   time.centerAlignText();
   time.font = Font.lightSystemFont(8);
   time.textColor = new Color(TEXTCOLOR);

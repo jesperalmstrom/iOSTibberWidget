@@ -96,6 +96,10 @@ avgPrice = avgPrice / allToday.length * 100
 let totCost = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["consumption"]["pageInfo"]["totalCost"])
 let totUsage = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["consumption"]["pageInfo"]["totalConsumption"])
 
+// Fetch total product/profit so far today
+let totProfit = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["production"]["pageInfo"]["totalProfit"])
+let totProduction = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["production"]["pageInfo"]["totalProduction"])
+
 // Fetch price in kr for the current hour
 let price = (json["data"]["viewer"]["homes"][HOME_NR]["currentSubscription"]["priceInfo"]["current"]["total"]);
 
@@ -164,21 +168,33 @@ async function createWidget() {
   let stackH = stack2.addStack();
   stackH.layoutVertically()
 
-  // Add usage so far today in right column
-  let usage = stackH.addText(totCost + " kr");
-  usage.rightAlignText();
-  usage.font = Font.lightSystemFont(16);
-  usage.textColor = new Color(TEXTCOLOR);
-
-  let usage2 = stackH.addText(totUsage + " kWh");
-  usage2.rightAlignText();
-  usage2.font = Font.lightSystemFont(14);
-  usage2.textColor = new Color(TEXTCOLOR);
-
   let usageTxt = stackH.addText("Idag");
   usageTxt.rightAlignText();
   usageTxt.font = Font.lightSystemFont(10);
   usageTxt.textColor = new Color(TEXTCOLOR);
+  
+  // Add usage so far today in right column
+  let usage = stackH.addText(totCost + " kr");
+  usage.rightAlignText();
+  usage.font = Font.lightSystemFont(14);
+  usage.textColor = new Color(TEXTCOLOR);
+
+  let usage2 = stackH.addText(totUsage + " kWh");
+  usage2.rightAlignText();
+  usage2.font = Font.lightSystemFont(12);
+  usage2.textColor = new Color(TEXTCOLOR);
+  
+  // Add usage so far today in right column
+  let profit = stackH.addText(totProfit + " kr");
+  profit.rightAlignText();
+  profit.font = Font.lightSystemFont(14);
+  profit.textColor = new Color(TEXTCOLOR);
+
+  let productionKwh = stackH.addText(totProduction + " kWh");
+  productionKwh.rightAlignText();
+  productionKwh.font = Font.lightSystemFont(12);
+  productionKwh.textColor = new Color(TEXTCOLOR);
+
 
   // Distance to bottom text
   lw.addSpacer(30)

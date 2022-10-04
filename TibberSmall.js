@@ -56,6 +56,12 @@ let body = {
             totalCost \
           } \
         } \
+        production(resolution: HOURLY, last: " + new Date().getHours() + ") { \
+          pageInfo { \
+            totalProduction \
+            totalProfit \
+          } \
+        } \
       } \
     } \
   }"

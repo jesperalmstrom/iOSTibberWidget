@@ -75,9 +75,9 @@ req.headers = {
 req.body = JSON.stringify(body)
 req.method = "POST";
 let json = await req.loadJSON()
-
+let home = json["data"]["viewer"]["homes"][HOME_NR];
 // Array with all of the day's hourly prices
-let allToday = json["data"]["viewer"]["homes"][HOME_NR]["currentSubscription"]["priceInfo"]["today"]
+let allToday = home["currentSubscription"]["priceInfo"]["today"]
 
 // Loop through all of the day's hourly prices to find min/max/avg
 let minPrice = 100000
@@ -93,15 +93,15 @@ for (var i = 0; i < allToday.length; i++) {
 avgPrice = avgPrice / allToday.length * 100
 
 // Fetch total usage/cost so far today
-let totCost = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["consumption"]["pageInfo"]["totalCost"])
-let totUsage = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["consumption"]["pageInfo"]["totalConsumption"])
+let totCost = Math.round(home["consumption"]["pageInfo"]["totalCost"])
+let totUsage = Math.round(home["consumption"]["pageInfo"]["totalConsumption"])
 
 // Fetch total product/profit so far today
-let totProfit = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["production"]["pageInfo"]["totalProfit"])
-let totProduction = Math.round(json["data"]["viewer"]["homes"][HOME_NR]["production"]["pageInfo"]["totalProduction"])
+let totProfit = Math.round(home["production"]["pageInfo"]["totalProfit"])
+let totProduction = Math.round(home["production"]["pageInfo"]["totalProduction"])
 
 // Fetch price in kr for the current hour
-let price = (json["data"]["viewer"]["homes"][HOME_NR]["currentSubscription"]["priceInfo"]["current"]["total"]);
+let price = (home["currentSubscription"]["priceInfo"]["current"]["total"]);
 
 // Recalculate to øre/öre
 let priceOre = Math.round(price * 100)
@@ -130,7 +130,7 @@ async function createWidget() {
   let imgstack = stack.addImage(TIBBERLOGO)
   imgstack.imageSize = new Size(100, 30)
   imgstack.centerAlignImage()
-  stack.setPadding(0, 0, 25, 0)
+  stack.setPadding(0, 0, 20, 0)
 
   let stack2 = lw.addStack()
 
@@ -138,7 +138,7 @@ async function createWidget() {
   let stackV = stack2.addStack();
   stackV.layoutVertically()
   stackV.centerAlignContent()
-  stackV.setPadding(0, 10, 0, 0)
+  stackV.setPadding(0, 0, 0, 0)
 
   // Add current price in left column
   let price = stackV.addText(priceOre + "");
@@ -162,7 +162,7 @@ async function createWidget() {
   maxmin.textColor = new Color(TEXTCOLOR);
 
   // Distance between the columns
-  stack2.addSpacer(20)
+  stack2.addSpacer(30)
 
   // Right column
   let stackH = stack2.addStack();
@@ -174,30 +174,30 @@ async function createWidget() {
   usageTxt.textColor = new Color(TEXTCOLOR);
   
   // Add usage so far today in right column
-  let usage = stackH.addText(totCost + " kr");
+  let usage = stackH.addText("- " + totCost + " kr");
   usage.rightAlignText();
   usage.font = Font.lightSystemFont(14);
-  usage.textColor = new Color(TEXTCOLOR);
+  usage.textColor = new Color(TEXTCOLOR_HIGH);
 
   let usage2 = stackH.addText(totUsage + " kWh");
   usage2.rightAlignText();
   usage2.font = Font.lightSystemFont(12);
-  usage2.textColor = new Color(TEXTCOLOR);
+  usage2.textColor = new Color(TEXTCOLOR_HIGH);
   
   // Add usage so far today in right column
-  let profit = stackH.addText(totProfit + " kr");
+  let profit = stackH.addText("+ " + totProfit + " kr");
   profit.rightAlignText();
   profit.font = Font.lightSystemFont(14);
-  profit.textColor = new Color(TEXTCOLOR);
+  profit.textColor = new Color(TEXTCOLOR_LOW);
 
   let productionKwh = stackH.addText(totProduction + " kWh");
   productionKwh.rightAlignText();
   productionKwh.font = Font.lightSystemFont(12);
-  productionKwh.textColor = new Color(TEXTCOLOR);
+  productionKwh.textColor = new Color(TEXTCOLOR_LOW);
 
 
   // Distance to bottom text
-  lw.addSpacer(30)
+  lw.addSpacer(10)
 
   // Add info about when the widget was last refreshed
   d = new Date()

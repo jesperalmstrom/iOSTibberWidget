@@ -9,8 +9,8 @@
 
 // Find your token by logging in with your Tibber account here:
 // https://developer.tibber.com/settings/accesstoken
-// NOTE! Your token is private, don't share it with anyone!
-const TIBBERTOKEN = args.widgetParameter  || "YOUR_TOKEN"
+// NOTE! Your token is private, don't share it with anyone! This is a demo token
+const TIBBER_TOKEN = args.widgetParameter  || "5K4MVS-OjfWhK_4yrjOlFe1F6kJXPVf7eQYggo8ebAE"
 
 // In most cases, the HOME_NR should be 0, but if you have several subscriptions (house + cabin eg)
 // then you may need to change it to 1 (or 2).
@@ -69,7 +69,7 @@ let body = {
 
 let req = new Request("https://api.tibber.com/v1-beta/gql")
 req.headers = {
-  "Authorization": "Bearer " + TIBBERTOKEN,
+  "Authorization": "Bearer " + TIBBER_TOKEN,
   "Content-Type": "application/json"
 }
 req.body = JSON.stringify(body)
@@ -124,14 +124,6 @@ async function createWidget() {
   d.setMinutes(1);
   lw.refreshAfterDate = d;
 
-  // Add the Tibber logo in its own stack
-  let stack = lw.addStack()
-  stack.addSpacer(12)
-  let imgstack = stack.addImage(TIBBERLOGO)
-  imgstack.imageSize = new Size(100, 30)
-  imgstack.centerAlignImage()
-  stack.setPadding(0, 0, 20, 0)
-
   let stack2 = lw.addStack()
 
   // Left column
@@ -139,6 +131,12 @@ async function createWidget() {
   stackV.layoutVertically()
   stackV.centerAlignContent()
   stackV.setPadding(0, 0, 0, 0)
+
+  // Logo
+   let imgstack = stackV.addImage(TIBBERLOGO)
+  imgstack.imageSize = new Size(50, 15)
+  imgstack.leftAlignImage()
+  stackV.addSpacer(15)
 
   // Add current price in left column
   let price = stackV.addText(priceOre + "");
@@ -162,17 +160,17 @@ async function createWidget() {
   maxmin.textColor = new Color(TEXTCOLOR);
 
   // Distance between the columns
-  stack2.addSpacer(30)
+  stack2.addSpacer(15)
 
   // Right column
   let stackH = stack2.addStack();
   stackH.layoutVertically()
-
+  stackH.setPadding(5, 0, 0, 0)
   let usageTxt = stackH.addText("Idag");
   usageTxt.rightAlignText();
   usageTxt.font = Font.lightSystemFont(10);
   usageTxt.textColor = new Color(TEXTCOLOR);
-  
+
   // Add usage so far today in right column
   let usage = stackH.addText("- " + totCost + " kr");
   usage.rightAlignText();
@@ -183,7 +181,7 @@ async function createWidget() {
   usage2.rightAlignText();
   usage2.font = Font.lightSystemFont(12);
   usage2.textColor = new Color(TEXTCOLOR_HIGH);
-  
+
   // Add usage so far today in right column
   let profit = stackH.addText("+ " + totProfit + " kr");
   profit.rightAlignText();

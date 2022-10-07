@@ -40,6 +40,7 @@ let body = {
   "query": "{ \
     viewer { \
       homes { \
+        name:appNickname \
         currentSubscription { \
           priceInfo { \
             current { \
@@ -92,6 +93,7 @@ for (var i = 0; i < allToday.length; i++) {
 }
 avgPrice = avgPrice / allToday.length * 100
 
+
 // Fetch total usage/cost so far today
 let totCost = Math.round(home["consumption"]["pageInfo"]["totalCost"])
 let totUsage = Math.round(home["consumption"]["pageInfo"]["totalConsumption"])
@@ -105,6 +107,8 @@ let price = (home["currentSubscription"]["priceInfo"]["current"]["total"]);
 
 // Recalculate to øre/öre
 let priceOre = Math.round(price * 100)
+
+let lastPriceToday = Math.round(allToday[allToday.length - 1].total * 100);
 
 // Fetch the Tibber logo
 const TIBBERLOGO = await new Request("https://tibber.imgix.net/zq85bj8o2ot3/6FJ8FvW8CrwUdUu2Uqt2Ns/3cc8696405a42cb33b633d2399969f53/tibber_logo_blue_w1000.png").loadImage()
@@ -129,18 +133,22 @@ async function createWidget() {
   // Left column
   let stackV = stack2.addStack();
   stackV.layoutVertically()
-  stackV.centerAlignContent()
   stackV.setPadding(0, 0, 0, 0)
 
   // Logo
    let imgstack = stackV.addImage(TIBBERLOGO)
   imgstack.imageSize = new Size(50, 15)
   imgstack.leftAlignImage()
-  stackV.addSpacer(15)
+  stackV.addSpacer(10)
+
+  let rightNowTxt = stackV.addText("Just nu");
+  rightNowTxt.leftAlignText();
+  rightNowTxt.font = Font.lightSystemFont(10);
+  rightNowTxt.textColor = new Color(TEXTCOLOR);
 
   // Add current price in left column
   let price = stackV.addText(priceOre + "");
-  price.centerAlignText();
+  price.leftAlignText();
   price.font = Font.lightSystemFont(20);
   // Price higher or lower than the daily average defines the color
   if (priceOre < avgPrice)
@@ -149,7 +157,7 @@ async function createWidget() {
     price.textColor = new Color(TEXTCOLOR_HIGH)
 
   const priceTxt = stackV.addText("öre/kWh");
-  priceTxt.centerAlignText();
+  priceTxt.leftAlignText();
   priceTxt.font = Font.lightSystemFont(10);
   priceTxt.textColor = new Color(TEXTCOLOR);
 
@@ -159,36 +167,67 @@ async function createWidget() {
   maxmin.font = Font.lightSystemFont(10);
   maxmin.textColor = new Color(TEXTCOLOR);
 
+    // Add today's "max | min" hourly price
+  let row = stackV.addStack();
+  let lastToday = row.addText("23:00 :")
+  lastToday.font = Font.lightSystemFont(10);
+  lastToday.textColor = new Color(TEXTCOLOR);
+  let lastTodayPrice = row.addText(lastPriceToday + " ")
+  lastTodayPrice.font = Font.lightSystemFont(10);
+  lastTodayPrice.textColor = price.textColor;
+  let lastTodayCurrency = row.addText("öre")
+  lastTodayCurrency.font = Font.lightSystemFont(10);
+  lastTodayCurrency.textColor = new Color(TEXTCOLOR);
+  
   // Distance between the columns
-  stack2.addSpacer(15)
+  //stack2.addSpacer(10)
 
   // Right column
   let stackH = stack2.addStack();
-  stackH.layoutVertically()
-  stackH.setPadding(5, 0, 0, 0)
-  let usageTxt = stackH.addText("Idag");
-  usageTxt.rightAlignText();
+  stackH.layoutVertically();
+  stackH.setPadding(0, 0, 0, 0);
+  
+  row = stackH.addStack();
+  row.addSpacer();
+  let homeNameTxt = row.addText(home.name);
+  homeNameTxt.rightAlignText();
+  homeNameTxt.font = Font.lightSystemFont(10);
+  homeNameTxt.textColor = new Color(TEXTCOLOR);
+  stackH.addSpacer(12);
+  
+  row = stackH.addStack();
+  row.addSpacer();
+  let usageTxt = row.addText("Totalt idag");
+  //usageTxt.rightAlignText();
   usageTxt.font = Font.lightSystemFont(10);
   usageTxt.textColor = new Color(TEXTCOLOR);
 
+  row = stackH.addStack();
+  row.addSpacer();
   // Add usage so far today in right column
-  let usage = stackH.addText("- " + totCost + " kr");
+  let usage = row.addText("- " + totCost + " kr");
   usage.rightAlignText();
   usage.font = Font.lightSystemFont(14);
   usage.textColor = new Color(TEXTCOLOR_HIGH);
 
-  let usage2 = stackH.addText(totUsage + " kWh");
+  row = stackH.addStack();
+  row.addSpacer();
+  let usage2 = row.addText(totUsage + " kWh");
   usage2.rightAlignText();
   usage2.font = Font.lightSystemFont(12);
   usage2.textColor = new Color(TEXTCOLOR_HIGH);
 
+  row = stackH.addStack();
+  row.addSpacer();
   // Add usage so far today in right column
-  let profit = stackH.addText("+ " + totProfit + " kr");
+  let profit = row.addText("+ " + totProfit + " kr");
   profit.rightAlignText();
   profit.font = Font.lightSystemFont(14);
   profit.textColor = new Color(TEXTCOLOR_LOW);
 
-  let productionKwh = stackH.addText(totProduction + " kWh");
+  row = stackH.addStack();
+  row.addSpacer();
+  let productionKwh = row.addText(totProduction + " kWh");
   productionKwh.rightAlignText();
   productionKwh.font = Font.lightSystemFont(12);
   productionKwh.textColor = new Color(TEXTCOLOR_LOW);

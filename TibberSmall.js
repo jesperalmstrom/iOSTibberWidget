@@ -174,7 +174,10 @@ async function createWidget() {
   lastToday.textColor = new Color(TEXTCOLOR);
   let lastTodayPrice = row.addText(lastPriceToday + " ")
   lastTodayPrice.font = Font.lightSystemFont(10);
-  lastTodayPrice.textColor = price.textColor;
+  if (lastPriceToday < avgPrice)
+    lastTodayPrice.textColor = new Color(TEXTCOLOR_LOW)
+  if (lastPriceToday > avgPrice)
+    lastTodayPrice.textColor = new Color(TEXTCOLOR_HIGH)
   let lastTodayCurrency = row.addText("öre")
   lastTodayCurrency.font = Font.lightSystemFont(10);
   lastTodayCurrency.textColor = new Color(TEXTCOLOR);

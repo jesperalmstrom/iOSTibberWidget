@@ -169,22 +169,20 @@ async function createWidget() {
 
     // Add today's "max | min" hourly price
   let row = stackV.addStack();
-  let lastToday = row.addText("23:00 :")
-  lastToday.font = Font.lightSystemFont(10);
+  let lastToday = row.addText("Natt: ")
+  lastToday.font = Font.lightSystemFont(9);
   lastToday.textColor = new Color(TEXTCOLOR);
   let lastTodayPrice = row.addText(lastPriceToday + " ")
-  lastTodayPrice.font = Font.lightSystemFont(10);
+  lastTodayPrice.font = Font.lightSystemFont(9);
   if (lastPriceToday < avgPrice)
     lastTodayPrice.textColor = new Color(TEXTCOLOR_LOW)
   if (lastPriceToday > avgPrice)
     lastTodayPrice.textColor = new Color(TEXTCOLOR_HIGH)
+  
   let lastTodayCurrency = row.addText("öre")
-  lastTodayCurrency.font = Font.lightSystemFont(10);
+  lastTodayCurrency.font = Font.lightSystemFont(9);
   lastTodayCurrency.textColor = new Color(TEXTCOLOR);
   
-  // Distance between the columns
-  //stack2.addSpacer(10)
-
   // Right column
   let stackH = stack2.addStack();
   stackH.layoutVertically();
